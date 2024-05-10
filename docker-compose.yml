@@ -1,0 +1,35 @@
+version: '3.8'
+
+services:
+  # MongoDB
+  mongodb:
+    image: mongo
+    container_name: mongodb
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+
+  # Node.js (Express)
+  nodejs:
+    build: /backend
+    container_name: nodejs
+    restart: always
+    ports:
+      - "3001:3001"
+    depends_on:
+      - mongodb
+
+  # React
+  react:
+    build: /frontend/app
+    volumes:
+      - './:/app'
+      - '/app/node_modules'
+    container_name: react
+    restart: always
+    ports:
+      - "3000:3000"
+
+volumes:
+  mongodb_data:
